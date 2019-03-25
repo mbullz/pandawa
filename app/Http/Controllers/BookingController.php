@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class BookingController extends Controller
 {
@@ -31,12 +32,34 @@ class BookingController extends Controller
                         ->where('date', $now)
                         ->get();
 
-        
+        $hours = collect([]);
+
+        for ($i = 0; $i < 24; $i++) {
+            $hour = substr('0' . $i, -2);
+            $row = (object)[
+                'hour'          => $hour,
+                'is_available'  => true,
+            ];
+            $hours->push($row);
+        }
 
         return view('bookings.create', [
             'now'       => $now,
             'bookings'  => $bookings,
+            'hours'     => $hours,
         ]);
+    }
+
+    public function booking_confirmation() {
+
+    }
+
+    public function payment() {
+
+    }
+
+    public function payment_confirmation() {
+        
     }
 
     /**
