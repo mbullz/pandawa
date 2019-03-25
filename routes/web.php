@@ -11,8 +11,17 @@
 |
 */
 
+/*
 Route::get('/', function () {
     return view('welcome');
 });
+*/
+
+Route::get('/', 'HomeController@index');
 
 Route::get('/login', 'UserController@login');
+Route::get('/register', 'UserController@register');
+
+Route::resources([
+	'bookings'	=> 'BookingController',
+]);
