@@ -14,9 +14,57 @@ class BookingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($is_sorted = false)
     {
-        //
+        $now = Carbon::now('+7');
+        $dates = collect([]);
+        $dates->push($now->copy()->toDateString());
+        for ($i = 1; $i <= 6; $i++) {
+            $dates->push($now->copy()->addDays($i)->toDateString());
+        }
+
+        $bookings = DB::table('bookings')
+                        ->join('users', 'bookings.user_id', '=', 'users.user_id')
+                        ->whereIn('date', $dates)
+                        ->orderBy('date', 'asc')
+                        ->orderBy('start_time', 'asc')
+                        ->get();
+
+        $schedules = collect([]);
+        for ($i = 0; $i < 7; $i++) {
+
+            $rows = collect([]);
+            $booking = $bookings->where('date', $dates->get($i));
+            for ($j = 0; $j < 24; $j++) {
+                $hour = substr('0' . $j, -2);
+
+                $booking_id = 0;
+                $status = 0;
+                $name = '';
+
+                $r = $booking->where('time', $hour . ':00:00')->first();
+                if ($r != null) {
+                    $booking_id = $r->booking_id;
+                    $status = $r->status;
+                    $name = $r->name;
+                }
+
+                $row = (object)[
+                    'booking_id'    => $booking_id,
+                    'hour'          => $hour,
+                    'status'        => $status,
+                    'name'          => $name,
+                ];
+
+                $rows->push($row);
+            }
+
+            $schedules->push($rows);
+        }
+
+        return view('bookings.index_admin_sorted', [
+            'schedules'  => $schedules,
+        ]);
     }
 
     /**
@@ -24,42 +72,46 @@ class BookingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
-        $now = Carbon::now('+7')->toDateString();
+    public function create(Request $request, $date = null) {
+        $now = Carbon::now('+7');
+        $dates = collect([]);
+        $dates->push($now->copy()->toDateString());
+        for ($i = 1; $i <= 6; $i++) {
+            $dates->push($now->copy()->addDays($i)->toDateString());
+        }
+
+        $date = $request->date ?? $now->copy()->toDateString();
 
         $bookings = DB::table('bookings')
                         ->where('user_id', 1)
-                        ->where('date', $now)
+                        ->where('date', $date)
+                        ->orderBy('start_time', 'asc')
                         ->get();
+
+        $bookedHours = $bookings->pluck('start_time');
 
         $hours = collect([]);
 
         for ($i = 0; $i < 24; $i++) {
             $hour = substr('0' . $i, -2);
+            $is_available = true;
+
+            if ($bookedHours->count() > 0 && $bookedHours->search($hour . ':00:00') !== false) {
+                $is_available = false;
+            }
+
             $row = (object)[
                 'hour'          => $hour,
-                'is_available'  => true,
+                'is_available'  => $is_available,
             ];
             $hours->push($row);
         }
 
         return view('bookings.create', [
-            'now'       => $now,
-            'bookings'  => $bookings,
+            'date'      => $date,
+            'dates'     => $dates,
             'hours'     => $hours,
         ]);
-    }
-
-    public function booking_confirmation() {
-
-    }
-
-    public function payment() {
-
-    }
-
-    public function payment_confirmation() {
-        
     }
 
     /**
@@ -70,7 +122,23 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user_id = 1;
+        $date = $request->date;
+        $time = $request->time;
+
+        if ($date == null || $time == null) return redirect()->route('bookings.create');
+
+        $booking_id = DB::table('bookings')
+                        ->insertGetId([
+                            'user_id'   => $user_id,
+                            'date'      => $date,
+                            'time'      => $time . ':00:00',
+                            'status'    => 1,
+                        ]);
+
+        return redirect()->action('BookingController@show', [
+            'id'    => $booking_id,
+        ]);
     }
 
     /**
@@ -81,7 +149,13 @@ class BookingController extends Controller
      */
     public function show($id)
     {
-        //
+        $booking = DB::table('bookings')
+                        ->where('booking_id', $id)
+                        ->first();
+
+        return view('bookings.show', [
+            'booking'  => $booking,
+        ]);
     }
 
     /**

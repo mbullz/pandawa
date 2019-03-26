@@ -11,11 +11,26 @@ class UserController extends Controller
     }
 
     public function login() {
+        return view('login');
+    }
 
+    public function doLogin(Request $request) {
+        $username = $request->username ?? '';
+        $password = $request->password ?? '';
+
+        if ($username == '' || $password == '') return redirect('/login');
     }
 
     public function register() {
         return view('register');
+    }
+
+    public function doRegister(Request $request) {
+
+    }
+
+    public function logout() {
+        
     }
 
     /**
