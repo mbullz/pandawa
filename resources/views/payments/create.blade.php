@@ -1,44 +1,71 @@
 @extends('layouts.app')
 
+@section('page_title')
+	Payment Confirmation
+@endsection
+
+@section('breadcrumb')
+	<li><a href="#">Dashboard</a></li>
+	<li><a href="#">Payments</a></li>
+	<li class="active">Confirmation</li>
+@endsection
+
 @section('content')
 
-	{{ URL::asset('storage') }}
+	{{-- URL::asset('storage') --}}
 
-	<form method="POST" action="/payments" enctype="multipart/form-data">
-		{{ csrf_field() }}
-		Booking Code : <input type="number" name="booking_id" />
-		<br />
-		Date : <input type="date" name="date" />
-		<br />
-		Amount : <input type="number" name="amount" />
-		<br />
-		Branch : <input type="text" name="branch" />
-		<br />
-		Account Name : <input type="text" name="account_name" />
-		<br />
-		Account Number : <input type="text" name="account_number" />
-		<br />
-		Upload Receipt : <input type="file" name="receipt">
-		<br />
-		Notes : <textarea name="notes"></textarea>
-		<br />
-		<input type="submit" value="Confirm" />
-	</form>
+	<div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Form</strong>
+                </div>
+                <div class="card-body">
+					
+					<form action="/payments" method="POST" enctype="multipart/form-data" class="form-horizontal">
+						{{ csrf_field() }}
+						<input type="hidden" name="booking_id" value="{{ $booking_id }}" />
+				        <div class="row form-group">
+				            <div class="col col-md-3"><label for="date" class=" form-control-label">Tanggal</label></div>
+				            <div class="col-12 col-md-9"><input type="date" id="date" name="date" placeholder="" class="form-control"><small class="form-text text-muted">Tanggal transfer</small></div>
+				        </div>
+				        <div class="row form-group">
+				            <div class="col col-md-3"><label for="amount" class=" form-control-label">Jumlah</label></div>
+				            <div class="col-12 col-md-9"><input type="number" id="amount" name="amount" placeholder="" class="form-control"><small class="form-text text-muted">Jumlah yang di bayarkan</small></div>
+				        </div>
+				        <div class="row form-group">
+				            <div class="col col-md-3"><label for="branch" class=" form-control-label">Bank</label></div>
+				            <div class="col-12 col-md-9"><input type="text" id="branch" name="branch" placeholder="" class="form-control"><small class="form-text text-muted">Bank yang di gunakan untuk pembayaran</small></div>
+				        </div>
+				        <div class="row form-group">
+				            <div class="col col-md-3"><label for="account_name" class=" form-control-label">Nama Rekening</label></div>
+				            <div class="col-12 col-md-9"><input type="text" id="account_name" name="account_name" placeholder="" class="form-control"><small class="form-text text-muted">Nama rekening yang di gunakan untuk pembayaran</small></div>
+				        </div>
+				        <div class="row form-group">
+				            <div class="col col-md-3"><label for="account_number" class=" form-control-label">Nomor Rekening</label></div>
+				            <div class="col-12 col-md-9"><input type="number" id="account_number" name="account_number" placeholder="" class="form-control"><small class="form-text text-muted">Nomor rekening yang di gunakan untuk pembayaran</small></div>
+				        </div>
+				        <div class="row form-group">
+				            <div class="col col-md-3"><label for="receipt" class=" form-control-label">Bukti Pembayaran</label></div>
+				            <div class="col-12 col-md-9"><input type="file" id="receipt" name="receipt" placeholder="" class="form-control"><small class="form-text text-muted">Upload bukti pembayaran</small></div>
+				        </div>
+				        <div class="row form-group">
+				            <div class="col col-md-3"><label for="handphone" class=" form-control-label">WhatsApp</label></div>
+				            <div class="col-12 col-md-9"><input type="number" id="handphone" name="handphone" placeholder="" class="form-control"><small class="form-text text-muted">Nomor whatsapp yang dapat di hubungi</small></div>
+				        </div>
+				        <div class="row form-group">
+				            <div class="col col-md-3"><label for="notes" class=" form-control-label">Keterangan</label></div>
+				            <div class="col-12 col-md-9"><textarea id="notes" name="notes" class="form-control" rows="5"></textarea><small class="form-text text-muted"></small></div>
+				        </div>
+				        <div class="row form-group">
+				            <div class="col col-md-3">&nbsp;</div>
+				            <div class="col-12 col-md-9"><input type="submit" value="Confirm" class="btn btn-primary" /></div>
+				        </div>
+				    </form>
 
-	<form action="#" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                    <div class="row form-group">
-                                        <div class="col col-md-3"><label class=" form-control-label">Static</label></div>
-                                        <div class="col-12 col-md-9">
-                                            <p class="form-control-static">Username</p>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">Text Input</label></div>
-                                        <div class="col-12 col-md-9"><input type="text" id="text-input" name="text-input" placeholder="Text" class="form-control"><small class="form-text text-muted">This is a help text</small></div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col col-md-3"><label for="email-input" class=" form-control-label">Email Input</label></div>
-                                        <div class="col-12 col-md-9"><input type="email" id="email-input" name="email-input" placeholder="Enter Email" class="form-control"><small class="help-block form-text">Please enter your email</small></div>
-                                    </div>
+            	</div>
+        	</div>
+    	</div>
+	</div>
 
 @endsection

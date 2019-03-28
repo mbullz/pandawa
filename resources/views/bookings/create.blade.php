@@ -42,7 +42,7 @@
                                         <div class="checkbox">
                                         	@if ($hour->is_available === true)
                                             <label for="checkbox{{$hour->hour}}" class="form-check-label ">
-                                                <input type="checkbox" id="checkbox{{$hour->hour}}" name="times" value="{{$hour->hour}}" class="form-check-input"> {{ $hour->hour . ':00' }}
+                                                <input type="checkbox" id="checkbox{{$hour->hour}}" name="times[]" value="{{$hour->hour}}" class="form-check-input" onclick="onClick()"> {{ $hour->hour . ':00' }}
                                             </label>
                                             @else
                                             	{{ $hour->hour . ':00' }}
@@ -53,6 +53,10 @@
 	                        </div>
 						</div>
 
+						<br />
+						<h3>Total Harga : <label id="total">Rp. 0</label></h3>
+						<br />
+
 						<input type="submit" class="btn btn-primary" value="Booking" />
 					</form>
 
@@ -60,5 +64,16 @@
         	</div>
     	</div>
 	</div>
+
+@endsection
+
+@section('script')
+
+	<script type="text/javascript" defer>
+		function onClick() {
+			var n = jQuery("input:checked").length;
+			jQuery("#total").html('Rp. ' + n * 50000);
+		}
+	</script>
 
 @endsection

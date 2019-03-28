@@ -18,9 +18,12 @@ class BookingController extends Controller
     {
         $now = Carbon::now('+7');
         $dates = collect([]);
+        $dates_for_human = collect([]);
         $dates->push($now->copy()->toDateString());
+        $dates_for_human->push($now->copy()->format('l, j-n-Y'));
         for ($i = 1; $i <= 6; $i++) {
             $dates->push($now->copy()->addDays($i)->toDateString());
+            $dates_for_human->push($now->copy()->addDays($i)->format('l, j-n-Y'));
         }
 
         $bookings = DB::table('bookings')
@@ -63,7 +66,9 @@ class BookingController extends Controller
         }
 
         return view('bookings.index_admin_sorted', [
-            'schedules'  => $schedules,
+            'dates'             => $dates,
+            'dates_for_human'   => $dates_for_human,
+            'schedules'         => $schedules,
         ]);
     }
 
@@ -124,16 +129,22 @@ class BookingController extends Controller
     {
         $user_id = 1;
         $date = $request->date;
-        $time = $request->time;
+        $times = collect($request->times)->sort();
 
-        if ($date == null || $time == null) return redirect()->route('bookings.create');
+        if ($date == null || $times->count() <= 0) return redirect()->route('bookings.create');
+
+        $start_time = $times->get(0) + 0;
+        $end_time = $times->get($times->count()-1) + 0;
+
+        if ($end_time - $start_time != $times->count() - 1) return redirect()->route('bookings.create');
 
         $booking_id = DB::table('bookings')
                         ->insertGetId([
-                            'user_id'   => $user_id,
-                            'date'      => $date,
-                            'time'      => $time . ':00:00',
-                            'status'    => 1,
+                            'user_id'       => $user_id,
+                            'date'          => $date,
+                            'start_time'    => $times->get(0) . ':00:00',
+                            'end_time'      => $times->get($times->count()-1) . ':00:00',
+                            'status'        => 1,
                         ]);
 
         return redirect()->action('BookingController@show', [
@@ -150,11 +161,22 @@ class BookingController extends Controller
     public function show($id)
     {
         $booking = DB::table('bookings')
+                        ->join('users', 'bookings.user_id', '=', 'users.user_id')
                         ->where('booking_id', $id)
                         ->first();
 
+        $start_time = substr($booking->start_time, 0, 2) + 0;
+        $end_time = substr($booking->end_time, 0, 2) + 0;
+
+        $total = ($end_time - $start_time + 1) * 50000;
+
+        $date = new Carbon($booking->date, '+7');
+        $date = $date->format('l, j-n-Y');
+
         return view('bookings.show', [
-            'booking'  => $booking,
+            'booking'   => $booking,
+            'total'     => number_format($total, 2, ',', '.'),
+            'date'      => $date,
         ]);
     }
 

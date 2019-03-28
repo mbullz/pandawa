@@ -14,7 +14,6 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        return view('payments.index');
     }
 
     /**
@@ -22,9 +21,15 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('payments.create');
+        $booking_id = $request->booking_id ?? 0;
+
+        if ($booking_id == 0) return redirect('/bookings');
+
+        return view('payments.create', [
+            'booking_id'    => $booking_id,
+        ]);
     }
 
     /**
@@ -41,16 +46,17 @@ class PaymentController extends Controller
         $branch = $request->branch ?? '';
         $account_name = $request->account_name ?? '';
         $account_number = $request->account_number ?? '';
+        $handphone = $request->handphone ?? '';
         $notes = $request->notes ?? '';
 
-        if ($date == '' || $amount <= 0 || $branch == '' || $account_name == '' || $account_number == '')
-            return redirect()->route('payments.create');
+        if ($booking_id == 0 || $date == '' || $amount <= 0 || $branch == '' || $account_name == '' || $account_number == '' || $handphone == '')
+            return redirect('/bookings');
 
         $booking = DB::table('bookings')
                         ->where('booking_id', $booking_id)
                         ->first();
 
-        if ($booking == null) return redirect()->route('payments.create');
+        if ($booking == null) return redirect('/bookings');
 
         $path = null;
         if ($request->hasFile('receipt')) {
@@ -65,6 +71,7 @@ class PaymentController extends Controller
                             'branch'            => $branch,
                             'account_name'      => $account_name,
                             'account_number'    => $account_number,
+                            'handphone'         => $handphone,
                             'notes'             => $notes,
                             'receipt'           => $path,
                         ]);
@@ -75,7 +82,7 @@ class PaymentController extends Controller
                 'status'    => 2,
             ]);
 
-        return redirect('/');
+        return redirect('/bookings');
     }
 
     /**
@@ -86,7 +93,19 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        //
+        $booking = DB::table('bookings')
+                        ->where('booking_id', $id)
+                        ->first();
+
+        $start_time = substr($booking->start_time, 0, 2) + 0;
+        $end_time = substr($booking->end_time, 0, 2) + 0;
+
+        $total = ($end_time - $start_time + 1) * 50000;
+
+        return view('payments.show', [
+            'booking_id'    => $id,
+            'total'         => number_format($total, 2, ',', '.'),
+        ]);
     }
 
     /**
