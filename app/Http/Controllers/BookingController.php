@@ -38,18 +38,25 @@ class BookingController extends Controller
 
             $rows = collect([]);
             $booking = $bookings->where('date', $dates->get($i));
-            for ($j = 0; $j < 24; $j++) {
+            $end_time = null;
+            for ($j = 16; $j < 24; $j++) {
                 $hour = substr('0' . $j, -2);
 
-                $booking_id = 0;
-                $status = 0;
-                $name = '';
+                if ($end_time == null) {
+                    $booking_id = 0;
+                    $status = 0;
+                    $name = '';
 
-                $r = $booking->where('time', $hour . ':00:00')->first();
-                if ($r != null) {
-                    $booking_id = $r->booking_id;
-                    $status = $r->status;
-                    $name = $r->name;
+                    $r = $booking->where('start_time', $hour . ':00:00')->first();
+                    if ($r != null) {
+                        $booking_id = $r->booking_id;
+                        $status = $r->status;
+                        $name = $r->name;
+                        $end_time = $r->start_time == $r->end_time ? null : $r->end_time;
+                    }
+                }
+                else {
+                    if (substr($end_time, 0, 2) == $hour) $end_time = null;
                 }
 
                 $row = (object)[
