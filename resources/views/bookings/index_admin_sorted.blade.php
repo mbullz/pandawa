@@ -27,10 +27,26 @@
                                 		<tr>
 	                                        <th scope="row">{{ $schedule->hour }}:00</th>
 	                                        <td>
-	                                        	{{ $schedule->name }}
+	                                        	<div class="row">
+		                                        	@foreach ($schedule->childs as $child)
+		                                        		<div class="col-lg-6 text-center">
+		                                        			{{ $child->name }}
+		                                        		</div>
+
+		                                        		<div class="col-lg-6 text-center">
+			                                        		@if ($child->status == 4)
+				                                        		<span class="badge badge-danger">Cancelled</span>
+				                                        	@elseif ($child->status == 3)
+				                                        		<span class="badge badge-success">Completed</span>
+				                                        	@elseif ($child->status == 2)
+				                                        		<span class="badge badge-primary">Processing</span>
+				                                        	@elseif ($child->status == 1)
+				                                        		<span class="badge badge-secondary">Order</span>
+				                                        	@endif
+			                                        	</div>
+		                                        	@endforeach
+	                                        	</div>
 	                                        </td>
-	                                        <td>Otto</td>
-	                                        <td>@mdo</td>
 	                                    </tr>
                                 	@endforeach
                                 </tbody>
@@ -41,11 +57,5 @@
 		    	</div>
 		@endforeach
 	</div>
-	
-	Booking Index Admin Sorted
-
-	<br />
-
-	{{ $schedules }}
 
 @endsection

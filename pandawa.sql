@@ -1,15 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
--- https://www.phpmyadmin.net/
+-- version 4.5.1
+-- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Mar 28, 2019 at 06:35 PM
--- Server version: 10.1.38-MariaDB
--- PHP Version: 7.3.3
+-- Host: 127.0.0.1
+-- Generation Time: Apr 19, 2019 at 04:03 PM
+-- Server version: 10.1.19-MariaDB
+-- PHP Version: 7.0.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -34,18 +32,11 @@ CREATE TABLE `bookings` (
   `date` date NOT NULL,
   `start_time` time NOT NULL,
   `end_time` time NOT NULL,
-  `status` tinyint(4) NOT NULL
+  `studio` int(11) NOT NULL DEFAULT '0',
+  `status` tinyint(4) NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `bookings`
---
-
-INSERT INTO `bookings` (`booking_id`, `user_id`, `date`, `start_time`, `end_time`, `status`) VALUES
-(1, 1, '2019-03-26', '13:00:00', '13:00:00', 1),
-(2, 1, '2019-03-26', '17:00:00', '18:00:00', 1),
-(4, 1, '2019-03-26', '22:00:00', '22:00:00', 2),
-(5, 1, '2019-03-29', '18:00:00', '20:00:00', 2);
 
 -- --------------------------------------------------------
 
@@ -65,14 +56,6 @@ CREATE TABLE `payments` (
   `notes` text,
   `receipt` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `payments`
---
-
-INSERT INTO `payments` (`payment_id`, `booking_id`, `date`, `amount`, `branch`, `account_name`, `account_number`, `handphone`, `notes`, `receipt`) VALUES
-(4, 4, '2019-03-26', 50000, 'BCA', 'ROBERT', '123456789', '', 'Test', 'uploads/jBXIpSGkUxQhmCMAVcdQ55yvf1FVPZhpf3dW495D.jpeg'),
-(5, 5, '2019-03-28', 150000, 'BCA', 'Robert', '123456789', '123456789', 'Test', 'uploads/jAnBSp4Z4MgHhWJhQwHgLjqNyNHQdz0yrkaZ3cwY.jpeg');
 
 -- --------------------------------------------------------
 
@@ -94,7 +77,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `name`, `phone`, `role`) VALUES
-(1, 'admin@admin.com', 'admin', 'Admin Band', '123456789', 'admin');
+(1, 'admin@admin.com', 'admin', 'Admin Band', '123456789', 'admin'),
+(2, 'user@user.com', 'user', 'User Band', '123456789', 'user');
 
 --
 -- Indexes for dumped tables
@@ -126,21 +110,17 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-COMMIT;
-
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

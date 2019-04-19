@@ -41,8 +41,13 @@
                         <a href="/bookings"><i class="menu-icon fa fa-shopping-cart"></i>Bookings </a>
                     </li>
                     <li>
+                        <a href="/contactus"><i class="menu-icon fa fa-heart"></i>Contact Us </a>
+                    </li>
+                    <!--
+                    <li>
                         <a href="/payments"><i class="menu-icon fa fa-dollar"></i>Payments </a>
                     </li>
+                    -->
                 </ul>
             </div><!-- /.navbar-collapse -->
         </nav>

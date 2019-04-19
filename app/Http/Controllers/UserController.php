@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -19,6 +20,19 @@ class UserController extends Controller
         $password = $request->password ?? '';
 
         if ($username == '' || $password == '') return redirect('/login');
+
+        $user = DB::table('users')
+                    ->where('username', $username)
+                    ->where('password', $password)
+                    ->first();
+
+        if ($user == null) return redirect('/login');
+
+        $request->session()->put('user_id', $user->user_id);
+        $request->session()->put('name', $user->name);
+        $request->session()->put('role', $user->role);
+
+        return redirect('/');
     }
 
     public function register() {
@@ -26,11 +40,32 @@ class UserController extends Controller
     }
 
     public function doRegister(Request $request) {
+        $username = $request->username ?? '';
+        $password = $request->password ?? '';
+        $confirm = $request->confirm ?? '';
+        $name = $request->name ?? '';
+        $phone = $request->phone ?? '';
+        $role = 'user';
 
+        if ($username == '' || $password == '' || $name == '' || $phone == '' || $password != $confirm)
+            return redirect('/register');
+
+        $user_id = DB::table('users')
+                        ->insertGetId([
+                            'username'  => $username,
+                            'password'  => $password,
+                            'name'      => $name,
+                            'phone'     => $phone,
+                            'role'      => $role,
+                        ]);
+
+        return redirect('/login');
     }
 
-    public function logout() {
-        
+    public function logout(Request $request) {
+        $request->session()->flush();
+
+        return redirect('/login');
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class PaymentController extends Controller
 {
@@ -40,6 +41,7 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
+        $user_id = $request->session()->get('user_id', 0);
         $booking_id = $request->booking_id ?? 0;
         $date = $request->date ?? '';
         $amount = $request->amount ?? 0;
@@ -57,6 +59,28 @@ class PaymentController extends Controller
                         ->first();
 
         if ($booking == null) return redirect('/bookings');
+
+        $r = DB::table('bookings')
+                    ->where('date', $booking->date)
+                    ->where('start_time', '<=', $booking->start_time)
+                    ->where('end_time', '>=', $booking->start_time)
+                    ->where('studio', '!=', 0)
+                    ->get();
+
+        // studio full
+        if ($r->count() >= 3) {
+            DB::table('bookings')
+            ->where('booking_id', $booking_id)
+            ->update([
+                'status'        => 4,
+                'updated_by'    => $user_id,
+                'updated_at'    => DB::raw('NOW()'),
+            ]);
+
+            return redirect('/bookings');
+        }
+
+        $studio = $r->count() + 1;
 
         $path = null;
         if ($request->hasFile('receipt')) {
@@ -79,7 +103,10 @@ class PaymentController extends Controller
         DB::table('bookings')
             ->where('booking_id', $booking_id)
             ->update([
-                'status'    => 2,
+                'studio'        => $studio,
+                'status'        => 2,
+                'updated_by'    => $user_id,
+                'updated_at'    => DB::raw('NOW()'),
             ]);
 
         return redirect('/bookings');
@@ -106,6 +133,22 @@ class PaymentController extends Controller
             'booking_id'    => $id,
             'total'         => number_format($total, 2, ',', '.'),
         ]);
+    }
+
+    public function confirm(Request $request, $id) {
+        if ($id == null) return redirect('/');
+
+        $payment = DB::table('payments')
+                        ->where('payment_id', $id)
+                        ->first();
+
+        DB::table('bookings')
+            ->where('booking_id', $payment->booking_id)
+            ->update([
+                'status'    => 3,
+            ]);
+
+        return redirect('/');
     }
 
     /**
