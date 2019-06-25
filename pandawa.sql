@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 19, 2019 at 04:03 PM
+-- Generation Time: Jun 25, 2019 at 06:38 AM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 7.0.13
 
@@ -38,6 +38,15 @@ CREATE TABLE `bookings` (
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `bookings`
+--
+
+INSERT INTO `bookings` (`booking_id`, `user_id`, `date`, `start_time`, `end_time`, `studio`, `status`, `updated_by`, `updated_at`) VALUES
+(1, 2, '2019-04-19', '20:00:00', '20:00:00', 1, 2, 2, '2019-04-19 21:17:27'),
+(2, 2, '2019-04-19', '20:00:00', '20:00:00', 2, 2, 2, '2019-04-19 21:28:44'),
+(3, 1, '2019-04-19', '21:00:00', '21:00:00', 1, 2, 1, '2019-04-19 21:33:21');
+
 -- --------------------------------------------------------
 
 --
@@ -56,6 +65,15 @@ CREATE TABLE `payments` (
   `notes` text,
   `receipt` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `payments`
+--
+
+INSERT INTO `payments` (`payment_id`, `booking_id`, `date`, `amount`, `branch`, `account_name`, `account_number`, `handphone`, `notes`, `receipt`) VALUES
+(1, 1, '2019-04-19', 50000, 'BCA', 'ROBERT', '12345', '12345', 'TEST', 'uploads/lBG08HG1QUGJmkDrIcItXg2r5chooAAXqBvvMq8e.jpeg'),
+(2, 2, '2019-04-19', 50000, 'BCA', 'ROBERT', '12345', '12345', 'TEST', 'uploads/yDyipQjT2iOB5cmRQTyx8gBEw5pZzYBucmFgIEjs.jpeg'),
+(3, 3, '2019-04-19', 50000, 'BCA', 'ROBERT', '12345', '12345', 'TEST', 'uploads/IDc52eCff6zZq6whe2IjDkM7aVRGIDmn5aK95wGd.jpeg');
 
 -- --------------------------------------------------------
 
@@ -110,12 +128,12 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `users`
 --
