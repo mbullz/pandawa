@@ -48,6 +48,10 @@ Route::get('/bookings/sorted', 'BookingController@index_sorted');
 
 Route::get('/payments/confirm/{id}', 'PaymentController@confirm');
 
+Route::get('/galleries', 'GalleryController@index');
+Route::post('/galleries', 'GalleryController@store');
+Route::delete('/galleries/{id}', 'GalleryController@destroy');
+
 Route::resources([
 	'bookings'	=> 'BookingController',
 	'payments'	=> 'PaymentController',

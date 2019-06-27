@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.8.5
+-- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jun 25, 2019 at 06:38 AM
--- Server version: 10.1.19-MariaDB
--- PHP Version: 7.0.13
+-- Host: localhost
+-- Generation Time: Jun 27, 2019 at 12:44 PM
+-- Server version: 10.1.38-MariaDB
+-- PHP Version: 7.3.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -38,14 +40,19 @@ CREATE TABLE `bookings` (
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `bookings`
+-- Table structure for table `galleries`
 --
 
-INSERT INTO `bookings` (`booking_id`, `user_id`, `date`, `start_time`, `end_time`, `studio`, `status`, `updated_by`, `updated_at`) VALUES
-(1, 2, '2019-04-19', '20:00:00', '20:00:00', 1, 2, 2, '2019-04-19 21:17:27'),
-(2, 2, '2019-04-19', '20:00:00', '20:00:00', 2, 2, 2, '2019-04-19 21:28:44'),
-(3, 1, '2019-04-19', '21:00:00', '21:00:00', 1, 2, 1, '2019-04-19 21:33:21');
+CREATE TABLE `galleries` (
+  `gallery_id` int(11) NOT NULL,
+  `photo` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -65,15 +72,6 @@ CREATE TABLE `payments` (
   `notes` text,
   `receipt` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `payments`
---
-
-INSERT INTO `payments` (`payment_id`, `booking_id`, `date`, `amount`, `branch`, `account_name`, `account_number`, `handphone`, `notes`, `receipt`) VALUES
-(1, 1, '2019-04-19', 50000, 'BCA', 'ROBERT', '12345', '12345', 'TEST', 'uploads/lBG08HG1QUGJmkDrIcItXg2r5chooAAXqBvvMq8e.jpeg'),
-(2, 2, '2019-04-19', 50000, 'BCA', 'ROBERT', '12345', '12345', 'TEST', 'uploads/yDyipQjT2iOB5cmRQTyx8gBEw5pZzYBucmFgIEjs.jpeg'),
-(3, 3, '2019-04-19', 50000, 'BCA', 'ROBERT', '12345', '12345', 'TEST', 'uploads/IDc52eCff6zZq6whe2IjDkM7aVRGIDmn5aK95wGd.jpeg');
 
 -- --------------------------------------------------------
 
@@ -106,13 +104,21 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `name`, `phone`, `role`)
 -- Indexes for table `bookings`
 --
 ALTER TABLE `bookings`
-  ADD PRIMARY KEY (`booking_id`);
+  ADD PRIMARY KEY (`booking_id`),
+  ADD KEY `USER_ID_BOOKINGS_USERS` (`user_id`);
+
+--
+-- Indexes for table `galleries`
+--
+ALTER TABLE `galleries`
+  ADD PRIMARY KEY (`gallery_id`);
 
 --
 -- Indexes for table `payments`
 --
 ALTER TABLE `payments`
-  ADD PRIMARY KEY (`payment_id`);
+  ADD PRIMARY KEY (`payment_id`),
+  ADD KEY `BOOKING_ID_PAYMENTS_BOOKINGS` (`booking_id`);
 
 --
 -- Indexes for table `users`
@@ -128,17 +134,43 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `galleries`
+--
+ALTER TABLE `galleries`
+  MODIFY `gallery_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `bookings`
+--
+ALTER TABLE `bookings`
+  ADD CONSTRAINT `USER_ID_BOOKINGS_USERS` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `payments`
+--
+ALTER TABLE `payments`
+  ADD CONSTRAINT `BOOKING_ID_PAYMENTS_BOOKINGS` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

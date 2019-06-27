@@ -118,8 +118,8 @@
                                             </small>
                                         </td>
                                         <td>
-                                            <a href="{{ URL()->asset('storage') . '/' . $payment->receipt }}" target="_blank">
-                                                <img src="{{ URL()->asset('storage') . '/' . $payment->receipt }}" width="50px" />
+                                            <a href="{{ URL()->asset('uploads') . '/' . $payment->receipt }}" target="_blank">
+                                                <img src="{{ URL()->asset('uploads') . '/' . $payment->receipt }}" width="50px" />
                                             </a>
                                         </td>
                                         <td>

@@ -48,11 +48,18 @@ class BookingController extends Controller
                             ->orderBy('booking_id', 'asc')
                             ->get();
         }
-        
+
+        $nowTimestamp = Carbon::now('+7')->timestamp;
+        foreach ($bookings AS $booking) {
+            $expiredTimestamp = new Carbon($booking->updated_at, '+7');
+            $expiredTimestamp = $expiredTimestamp->addMinutes(15)->timestamp;
+            
+            $booking->expiredTime = $expiredTimestamp * 1000;
+        }
         
         return view('bookings.index', [
-            'role'      => $role,
-            'bookings'  => $bookings,
+            'role'          => $role,
+            'bookings'      => $bookings,
         ]);
     }
 

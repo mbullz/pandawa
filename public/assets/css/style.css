@@ -82,6 +82,12 @@ Googel Fonts  */
 .bg-white {
   background-color: #fff; }
 
+.bg-studio {
+  background-image: url('/images/background.jpeg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .fade-5 {
   opacity: 0.5; }
 

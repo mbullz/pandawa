@@ -41,6 +41,9 @@
                         <a href="/bookings"><i class="menu-icon fa fa-shopping-cart"></i>Bookings </a>
                     </li>
                     <li>
+                        <a href="/galleries"><i class="menu-icon fa fa-film"></i>Galleries </a>
+                    </li>
+                    <li>
                         <a href="/contactus"><i class="menu-icon fa fa-heart"></i>Contact Us </a>
                     </li>
                     <!--

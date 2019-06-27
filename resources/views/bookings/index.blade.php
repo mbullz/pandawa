@@ -70,6 +70,29 @@
 	                                    		<span class="badge badge-secondary">Processing</span>
 	                                    	@elseif ($booking->status == 1)
 	                                    		<button class="btn btn-warning" onclick="window.location='/bookings/{{ $booking->booking_id }}';">Make Payment</button>
+                                                &nbsp;<label id="labelCountdown{{ $booking->booking_id }}" style="color: red;"></label>
+                                                <script>
+                                                    var {{ 'x' . $booking->booking_id }} = setInterval(function() {
+                                                        var now = new Date().getTime();
+
+                                                        var distance = {{ $booking->expiredTime }} - now;
+                                                        distance /= 1000;
+                                                        distance += 5;
+
+                                                        var minutes = Math.floor(distance / 60);
+                                                        var seconds = Math.floor(distance % 60);
+
+                                                        if (minutes < 10) minutes = '0' + minutes;
+                                                        if (seconds < 10) seconds = '0' + seconds;
+
+                                                        document.getElementById('labelCountdown{{ $booking->booking_id }}').innerHTML = minutes + ":" + seconds;
+
+                                                        if (distance < 1) {
+                                                            clearInterval({{ 'x' . $booking->booking_id }});
+                                                            location.reload();
+                                                        }
+                                                    }, 1000);
+                                                </script>
 	                                    	@endif
                                     	@endif
                                     </td>

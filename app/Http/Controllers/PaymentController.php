@@ -84,7 +84,8 @@ class PaymentController extends Controller
 
         $path = null;
         if ($request->hasFile('receipt')) {
-            $path = $request->file('receipt')->store('uploads');
+            //$path = $request->file('receipt')->store('public_uploads');
+            $path = $request->file('receipt')->store('payments', ['disk' => 'public_uploads']);
         }
 
         $payment_id = DB::table('payments')
